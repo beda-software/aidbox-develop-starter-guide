@@ -446,13 +446,51 @@ export function App() {
 
 - `remoteData`: Этот параметр представляет собой объект RemoteData, который используется для управления рендерингом компонента.
 
-- `renderFailure`: Этот параметр представляет собой функцию, которая возвращает компонент, если объект RemoteData находится в состоянии "failure". В данном случае свойство `renderFailure` - это функция, которая возвращает компонент AlertFailure.
+- `renderFailure`: Этот параметр представляет собой функцию, которая возвращает компонент, если объект RemoteData находится в состоянии "failure". В данном случае свойство `renderFailure` - это функция, которая возвращает компонент `AlertFailure`.
 
 - `renderLoading`: Этот параметр представляет собой функцию, которая возвращает компонент, если объект RemoteData находится в состоянии "loading". В этом случае свойство `renderLoading` является функцией, возвращающей компонент Loader.
 
 Компонент `RenderRemoteData` также имеет дочерний параметр, который представляет собой функцию, возвращающую компонент, если объект RemoteData находится в состоянии "success".
 
+## Approach to stylization
 
+### Component.module.scss
+
+In the directory of the component `AlertFailure`, create a file `AlertFailure.module.scss`:
+
+```scss
+.space {
+  width: 100%;
+  padding: 10px;
+}
+```
+
+We use a modular design approach, which involves creating `*.module.scss` files to organize and structure styles, because it promotes reuse and creation of self-contained components, helps prevent unexpected side effects, and allows us to take advantage of advanced SCSS features and capabilities.
+
+### Antd
+
+Add the following code to the `AlertFailure` component:
+
+```tsx
+import { Alert, Space } from "antd";
+import s from "./AlertFailure.module.scss";
+
+interface AlertFailureProps {
+  error: any;
+}
+
+export function AlertFailure({ error }: AlertFailureProps) {
+  return (
+    <Space direction="vertical" className={s.space}>
+      <Alert message={JSON.stringify(error)} type="error" />
+    </Space>
+  );
+}
+```
+
+This is a simple presentation component used to display an error message to the user when an asynchronous operation fails. It uses the `Alert` and `Space` components from the `antd` library to display the error message in a visually appealing way.
+
+We use the [Ant Design](https://ant.design/) because it provides us with a library of pre-designed and consistent user interface components that are easy to use and configure. The key feature of choosing Antd is that it best meets our needs for out-of-the-box components compared to other libraries.
 
 <!-- ## Авторизация и роутинг
 
