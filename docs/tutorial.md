@@ -637,6 +637,116 @@ export function useSignIn() {
 }
 ```
 
+## Prepare components
+
+Подготовим презентационные компоненты для дальнейшей разработки:
+
+### AppHeader
+
+Создадим компонент `AppHeader`:
+
+```tsx
+import { Button, Space } from 'antd';
+import s from './AppHeader.module.scss';
+import { useAppHeader } from './useAppHeader';
+
+interface AppHeaderProps {
+    children?: JSX.Element;
+}
+
+export function AppHeader({ children }: AppHeaderProps) {
+    const { onLogout } = useAppHeader();
+    return (
+        <Space size="middle" className={s.container}>
+            {children}
+            <Button key="logout" onClick={onLogout}>
+                Logout
+            </Button>
+        </Space>
+    );
+}
+```
+
+Хук `useAppHeader.ts` для `AppHeader`:
+
+```ts
+import { logout } from '../../services/auth';
+
+export function useAppHeader() {
+    const onLogout = () => {
+        logout();
+        window.location.reload();
+    };
+
+    return {
+        onLogout,
+    };
+}
+```
+
+Стили для `AppHeader`:
+
+```scss
+.container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px;
+}
+```
+
+<!-- ## Patients List
+
+Обновим контейнер PatientsList:
+
+```tsx
+import { RenderRemoteData } from 'aidbox-react/lib/components/RenderRemoteData';
+import { Button } from 'antd';
+import { AddPatientModal } from '../../components/AddPatientModal';
+import { AlertFailure } from '../../components/AlertFailure';
+import { AppHeader } from '../../components/AppHeader';
+import { Loader } from '../../components/Loader';
+import { PatientsListTable } from '../../components/PatientsListTable';
+import { usePatientsList } from './hooks';
+import s from './PatientsList.module.scss';
+
+export function PatientsList() {
+    const { showPatientModal, setShowPatientModal, patientsRD, reloadPatientsList } =
+        usePatientsList();
+
+    return (
+        <>
+            <AppHeader>
+                <Button
+                    key="create-patient"
+                    onClick={() => setShowPatientModal(true)}
+                    type={'primary'}
+                >
+                    Create patient
+                </Button>
+            </AppHeader>
+            <AddPatientModal
+                showPatientModal={showPatientModal}
+                setShowPatientModal={setShowPatientModal}
+                reloadPatientsList={reloadPatientsList}
+            />
+            <RenderRemoteData
+                remoteData={patientsRD}
+                renderFailure={(error) => <AlertFailure error={error} />}
+                renderLoading={() => <Loader />}
+            >
+                {(data) => (
+                    <div className={s.table}>
+                        <PatientsListTable patientsList={data} />
+                    </div>
+                )}
+            </RenderRemoteData>
+        </>
+    );
+}
+
+``` -->
+
 <!-- ### Configure Aidbox
 
 Изменим файл `system.edn` в директории `aidbox-project/zrc/system.edn`, добавив Client:
