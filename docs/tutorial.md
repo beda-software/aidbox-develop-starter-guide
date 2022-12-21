@@ -8,9 +8,9 @@ title: Tutorial
 ## Intro
 
 Welcome to the tutorial! In this tutorial, we will be creating a MVP application
-for doctors in laboratories to use for determining *hemoglobin levels.
+for doctors in laboratories to use for determining \*hemoglobin levels.
 
-<sub><sup>*Hemoglobin is a protein found in the blood that is responsible
+<sub><sup>\*Hemoglobin is a protein found in the blood that is responsible
 for transporting oxygen throughout the body.
 It is measured in units per deciliter of blood (g/dL).</sup></sub>
 
@@ -19,7 +19,7 @@ It is measured in units per deciliter of blood (g/dL).</sup></sub>
 - Getting the [Patient](https://build.fhir.org/patient.html) resource list
 - Create a Patient resource
 - Getting a list of [Observation](https://build.fhir.org/observation.html)
-resources for the specified patient
+  resources for the specified patient
 - Creating an Observation resource
 
 ## Setup
@@ -106,24 +106,24 @@ root.render(
 
 ```json
 {
-    "compilerOptions": {
-        "target": "es5",
-        "lib": ["dom", "dom.iterable", "esnext"],
-        "allowJs": true,
-        "skipLibCheck": true,
-        "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true,
-        "strict": true,
-        "forceConsistentCasingInFileNames": true,
-        "noFallthroughCasesInSwitch": true,
-        "module": "esnext",
-        "moduleResolution": "node",
-        "resolveJsonModule": true,
-        "isolatedModules": true,
-        "noEmit": true,
-        "jsx": "react-jsx"
-    },
-    "include": ["src"]
+  "compilerOptions": {
+    "target": "es5",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx"
+  },
+  "include": ["src"]
 }
 ```
 
@@ -137,14 +137,14 @@ Create a `.prettierrc.js` file in the `frontend` directory, with the contents:
 
 ```javascript
 module.exports = {
-    bracketSpacing: true,
-    jsxBracketSameLine: false,
-    singleQuote: true,
-    trailingComma: 'all',
-    tabWidth: 4,
-    arrowParens: 'always',
-    printWidth: 100,
-    jsxSingleQuote: false,
+  bracketSpacing: true,
+  jsxBracketSameLine: false,
+  singleQuote: true,
+  trailingComma: "all",
+  tabWidth: 4,
+  arrowParens: "always",
+  printWidth: 100,
+  jsxSingleQuote: false,
 };
 ```
 
@@ -166,7 +166,7 @@ npm run format
 
 Создадим в директории `src` несколько новых директорий:
 
-- `components` 
+- `components`
 - `containers`
 - `services`
 - `types`
@@ -205,9 +205,10 @@ main-directory/
     └── yarn.lock
 ```
 
-## Контейнеры
- 
+## Компоненты
+
 Компоненты принятно делить на `smart` и `dumb`.
+
 - `smart` компоненты помещаем в директорию `containers`
 - `dumb` компоненты помещаем в папку `components`
 
@@ -256,6 +257,99 @@ components
 └── Loader
     ├── index.tsx
 ```
+
+## Aidbox types
+
+С помощтюу утилиты [aidbox-ts-generator](https://github.com/beda-software/aidbox-ts-generator) генерируется файл с TypeScript типами для FHIR ресурсов.
+
+В директории `type` создайте файл `aidbox.ts` и поместите в него следующий [код с типами](https://gist.githubusercontent.com/atuonufure/185cea02866703405696b35493128a00/raw/82c142cf24dccc8078d7fe88ca3c7cf025564715/index.ts).
+
+## Utils
+
+Директория `utils` обычно используется для хранения утилитарных функций и другого служебного кода, который используется в проекте.
+
+В директории `utils` создадим файлы `initialize.ts`, `config.ts` and `auth.ts`.
+
+Добавим в `config.ts` следующий код:
+
+```ts
+export default {
+  clientId: "SPA",
+  tier: "develop",
+  baseURL: "http://localhost:8080",
+};
+```
+
+Это конфигурационный файл, в котором будет указаны настройки для обращения к приложению Aidbox.
+
+Добавим в `initialize.ts` следующий код:
+
+```ts
+import { setInstanceBaseURL } from "aidbox-react/lib/services/instance";
+
+import config from "./config";
+
+export function init(baseURL?: string) {
+  setInstanceBaseURL(baseURL ?? config.baseURL);
+}
+```
+
+С помощью функции `init` мы установим url на который будут отправляться запросы.
+
+Добавим в `auth.ts` следующий код:
+
+```ts
+import { service } from "aidbox-react/lib/services/service";
+import { RemoteDataResult } from "aidbox-react/lib/libs/remoteData";
+import { User } from "../types/aidbox";
+
+export function getToken() {
+  return window.localStorage.getItem("token") || undefined;
+}
+
+export function setToken(token: string) {
+  window.localStorage.setItem("token", token);
+}
+
+export function removeToken() {
+  window.localStorage.removeItem("token");
+}
+
+export function logout() {
+  removeToken();
+  return service({
+    method: "DELETE",
+    url: "/Session",
+  });
+}
+
+export function getUserInfo() {
+  return service<User>({
+    method: "GET",
+    url: "/auth/userinfo",
+  });
+}
+
+export interface SigninBody {
+  email: string;
+  password: string;
+}
+
+export function signin(data: SigninBody): Promise<RemoteDataResult> {
+  return service({
+    url: "/auth/token",
+    method: "POST",
+    data: {
+      username: data.email,
+      password: data.password,
+      client_id: "SPA",
+      grant_type: "password",
+    },
+  });
+}
+```
+
+## Авторизация и роутинг
 
 <!-- Заменим код в компоненте `App` на следующий:
 
