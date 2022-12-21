@@ -16,9 +16,9 @@ It is measured in units per deciliter of blood (g/dL).</sup></sub>
 
 ## Features
 
-- Getting the [Patient](https://build.fhir.org/patient.html) resource list
+- Getting the [Patient](https://www.hl7.org/fhir/patient.html) resource list
 - Create a Patient resource
-- Getting a list of [Observation](https://build.fhir.org/observation.html)
+- Getting a list of [Observation](https://www.hl7.org/fhir/observation.html)
   resources for the specified patient
 - Creating an Observation resource
 
@@ -262,13 +262,15 @@ components
 
 С помощтюу утилиты [aidbox-ts-generator](https://github.com/beda-software/aidbox-ts-generator) генерируется файл с TypeScript типами для FHIR ресурсов.
 
-В директории `type` создайте файл `aidbox.ts` и поместите в него следующий [код с типами](https://gist.githubusercontent.com/atuonufure/185cea02866703405696b35493128a00/raw/82c142cf24dccc8078d7fe88ca3c7cf025564715/index.ts).
+В директории `types` создайте файл `aidbox.ts` и поместите в него следующий [код с типами](https://gist.githubusercontent.com/atuonufure/185cea02866703405696b35493128a00/raw/82c142cf24dccc8078d7fe88ca3c7cf025564715/index.ts).
 
 ## Utils
 
 Директория `utils` обычно используется для хранения утилитарных функций и другого служебного кода, который используется в проекте.
 
-В директории `utils` создадим файлы `initialize.ts`, `config.ts` and `auth.ts`.
+## Services
+
+В директории `services` создадим файлы `initialize.ts`, `config.ts` and `auth.ts`.
 
 Добавим в `config.ts` следующий код:
 
@@ -349,9 +351,112 @@ export function signin(data: SigninBody): Promise<RemoteDataResult> {
 }
 ```
 
-## Авторизация и роутинг
+Функции в файле `auth.ts` используются для управления сеансом пользователя, получения информации о нем, а также для входа или выхода пользователя из приложения.
 
-<!-- Заменим код в компоненте `App` на следующий:
+`service({...axiosConfig})` Basic function for making requests. WIP
+
+## RenderRemoteData
+
+Создадим файл `hooks.ts` в директории `containers/App`:
+
+```ts
+import { useService } from "aidbox-react/lib/hooks/service";
+import { isSuccess, success } from "aidbox-react/lib/libs/remoteData";
+import {
+  resetInstanceToken,
+  setInstanceToken,
+} from "aidbox-react/lib/services/instance";
+import { extractErrorCode } from "aidbox-react/lib/utils/error";
+import { getToken, getUserInfo } from "../../services/auth";
+
+export function useApp() {
+  const [userResponse] = useService(async () => {
+    const appToken = getToken();
+    if (!appToken) {
+      return success(null);
+    }
+    setInstanceToken({ access_token: appToken, token_type: "Bearer" });
+    const response = await getUserInfo();
+    if (isSuccess(response)) {
+    } else {
+      if (extractErrorCode(response.error) !== "network_error") {
+        resetInstanceToken();
+        return success(null);
+      }
+    }
+    return response;
+  });
+
+  return { userResponse };
+}
+```
+
+В большинстве случаев логику выносим в кастомные хуки для лучшей читаемости, переиспользования и тестирования.
+
+Далее изменим код в `App.tsx':
+
+```tsx
+import { RenderRemoteData } from "aidbox-react/lib/components/RenderRemoteData";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { AlertFailure } from "../../components/AlertFailure";
+import { Loader } from "../../components/Loader";
+import { SignIn } from "../../components/SignIn";
+import { ObservationsList } from "../ObservationsList";
+import { PatientsList } from "../PatientsList";
+import { useApp } from "./hooks";
+
+export function App() {
+  const { userResponse } = useApp();
+
+  return (
+    <BrowserRouter>
+      <RenderRemoteData
+        remoteData={userResponse}
+        renderFailure={() => <AlertFailure />}
+        renderLoading={() => <Loader />}
+      >
+        {(user) => (
+          <Routes>
+            {user ? (
+              <>
+                <Route path="patients" element={<PatientsList />} />
+                <Route
+                  path="patients/:patientId/"
+                  element={<ObservationsList />}
+                />
+                <Route path="*" element={<Navigate to="/patients" />} />
+              </>
+            ) : (
+              <>
+                <Route path="signin" element={<SignIn />} />
+                <Route path="*" element={<Navigate to="/signin" />} />
+              </>
+            )}
+          </Routes>
+        )}
+      </RenderRemoteData>
+    </BrowserRouter>
+  );
+}
+```
+
+`RenderRemoteData` - это компонент, который используется для рендеринга различного содержимого в зависимости от состояния объекта RemoteData.
+
+Компонент `RenderRemoteData` принимает несколько параметров:
+
+- `remoteData`: Этот параметр представляет собой объект RemoteData, который используется для управления рендерингом компонента.
+
+- `renderFailure`: Этот параметр представляет собой функцию, которая возвращает компонент, если объект RemoteData находится в состоянии "failure". В данном случае свойство `renderFailure` - это функция, которая возвращает компонент AlertFailure.
+
+- `renderLoading`: Этот параметр представляет собой функцию, которая возвращает компонент, если объект RemoteData находится в состоянии "loading". В этом случае свойство `renderLoading` является функцией, возвращающей компонент Loader.
+
+Компонент `RenderRemoteData` также имеет дочерний параметр, который представляет собой функцию, возвращающую компонент, если объект RemoteData находится в состоянии "success".
+
+
+
+<!-- ## Авторизация и роутинг
+
+Заменим код в компоненте `App` на следующий:
 
 ```typescript jsx
 import { Route, Routes, BrowserRouter, Navigate } from 'react-router-dom';
