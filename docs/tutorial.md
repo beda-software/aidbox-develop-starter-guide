@@ -276,7 +276,7 @@ components
 
 ```ts
 export default {
-  clientId: "SPA",
+  clientId: "client",
   tier: "develop",
   baseURL: "http://localhost:8080",
 };
@@ -344,7 +344,7 @@ export function signin(data: SigninBody): Promise<RemoteDataResult> {
     data: {
       username: data.email,
       password: data.password,
-      client_id: "SPA",
+      client_id: "client",
       grant_type: "password",
     },
   });
@@ -440,19 +440,41 @@ export function App() {
 }
 ```
 
-`RenderRemoteData` - это компонент, который используется для рендеринга различного содержимого в зависимости от состояния объекта RemoteData.
+`RenderRemoteData` - это компонент, который используется для рендеринга различного содержимого в зависимости от состояния объекта *RemoteData.
 
 Компонент `RenderRemoteData` принимает несколько параметров:
 
-- `remoteData`: Этот параметр представляет собой объект RemoteData, который используется для управления рендерингом компонента.
+- `remoteData`: этот параметр представляет собой объект RemoteData.
 
-- `renderFailure`: Этот параметр представляет собой функцию, которая возвращает компонент, если объект RemoteData находится в состоянии "failure". В данном случае свойство `renderFailure` - это функция, которая возвращает компонент `AlertFailure`.
+- `renderFailure`: этот параметр представляет собой функцию, которая возвращает компонент, если объект RemoteData находится в состоянии Failure. В данном случае свойство `renderFailure` - это функция, которая возвращает компонент `AlertFailure`.
 
-- `renderLoading`: Этот параметр представляет собой функцию, которая возвращает компонент, если объект RemoteData находится в состоянии "loading". В этом случае свойство `renderLoading` является функцией, возвращающей компонент Loader.
+- `renderLoading`: этот параметр представляет собой функцию, которая возвращает компонент, если объект RemoteData находится в состоянии loading. В этом случае свойство `renderLoading` является функцией, возвращающей компонент Loader.
 
-Компонент `RenderRemoteData` также имеет дочерний параметр, который представляет собой функцию, возвращающую компонент, если объект RemoteData находится в состоянии "success".
+Компонент `RenderRemoteData` также имеет дочерний параметр, который представляет собой функцию, возвращающую компонент, если объект RemoteData находится в состоянии Success.
+
+*RemoteData is a wrapper over data.
+
+It could have four statuses:
+
+- Success
+- Failure
+- Loading
+- NotAsked
+
+RemoteDataResult is a subset of RemoteData and it could have two statuses:
+
+- Success
+- Failure
+
+When we make a request to a server with any of library's methods, we'll probably get RemoteData as a result. Then we can easily check what've got.
 
 ## Approach to stylization
+
+Add the sass package with the command:
+
+```bash
+yarn add sass
+```
 
 ### Component.module.scss
 
@@ -467,7 +489,7 @@ In the directory of the component `AlertFailure`, create a file `AlertFailure.mo
 
 We use a modular design approach, which involves creating `*.module.scss` files to organize and structure styles, because it promotes reuse and creation of self-contained components, helps prevent unexpected side effects, and allows us to take advantage of advanced SCSS features and capabilities.
 
-### Antd
+### Ant Design
 
 Add the following code to the `AlertFailure` component:
 
@@ -488,52 +510,137 @@ export function AlertFailure({ error }: AlertFailureProps) {
 }
 ```
 
-This is a simple presentation component used to display an error message to the user when an asynchronous operation fails. It uses the `Alert` and `Space` components from the `antd` library to display the error message in a visually appealing way.
+We use the [Ant Design](https://ant.design/) it provides us with a library of pre-designed and consistent user interface components that are easy to use and configure. The key feature of choosing Antd is that it best meets our needs for out-of-the-box components compared to other libraries.
 
-We use the [Ant Design](https://ant.design/) because it provides us with a library of pre-designed and consistent user interface components that are easy to use and configure. The key feature of choosing Antd is that it best meets our needs for out-of-the-box components compared to other libraries.
+In `App.tsx` change the code:
 
-<!-- ## Авторизация и роутинг
-
-Заменим код в компоненте `App` на следующий:
-
-```typescript jsx
-import { Route, Routes, BrowserRouter, Navigate } from 'react-router-dom';
-import { RenderRemoteData } from 'aidbox-react/lib/components/RenderRemoteData';
-import { SignIn } from '../../components/SignIn';
-import { useApp } from './hooks';
-import { ObservationsList } from '../ObservationsList';
-import { PatientsList } from '../PatientsList';
-import { Loader } from '../../components/Loader';
-import { AlertFailure } from '../../components/AlertFailure';
-
-export function App() {
-    const { userResponse } = useApp();
-
-    return (
-        <BrowserRouter>
+```tsx
+...
             <RenderRemoteData
                 remoteData={userResponse}
                 renderFailure={(error) => <AlertFailure error={error} />}
                 renderLoading={() => <Loader />}
             >
-                {(user) => (
-                    <Routes>
-                        {user ? (
-                            <>
-                                <Route path="patients" element={<PatientsList />} />
-                                <Route path="patients/:patientId/" element={<ObservationsList />} />
-                                <Route path="*" element={<Navigate to="/patients" />} />
-                            </>
-                        ) : (
-                            <>
-                                <Route path="signin" element={<SignIn />} />
-                                <Route path="*" element={<Navigate to="/signin" />} />
-                            </>
-                        )}
-                    </Routes>
-                )}
-            </RenderRemoteData>
-        </BrowserRouter>
+...
+```
+
+Изменим `Loader` компонент:
+
+```tsx
+import { Spin } from "antd";
+import s from "./Loader.module.scss";
+
+export function Loader() {
+  return (
+    <div className={s.container}>
+      <Spin />
+    </div>
+  );
+}
+```
+
+Также добавим к нему стили `Loader.module.scss`:
+
+```scss
+.container {
+  text-align: center;
+  width: 100%;
+}
+```
+
+## SignIn
+
+Add the following code to the `SignIn` component:
+
+```tsx
+import { Button, Form, Input, Space, Typography } from 'antd';
+import { useSignIn } from './useSignIn';
+import s from './SignIn.module.scss';
+
+export function SignIn() {
+    const { onFinish, onFinishFailed } = useSignIn();
+
+    const { Text } = Typography;
+
+    return (
+        <Space>
+            <Form
+                name="basic"
+                initialValues={{ remember: true }}
+                onFinish={onFinish}
+                onFinishFailed={onFinishFailed}
+                autoComplete="off"
+                className={s.form}
+            >
+                <Text>Username</Text>
+                <Form.Item
+                    name="email"
+                    rules={[{ required: true, message: 'Please input your username!' }]}
+                >
+                    <Input placeholder="username" />
+                </Form.Item>
+                <Text>Password</Text>
+                <Form.Item
+                    name="password"
+                    rules={[{ required: true, message: 'Please input your password!' }]}
+                >
+                    <Input.Password placeholder="password" />
+                </Form.Item>
+                <Form.Item>
+                    <Button type="primary" htmlType="submit">
+                        Login
+                    </Button>
+                </Form.Item>
+            </Form>
+        </Space>
     );
 }
+```
+
+В директории `SignIn` создадим хук `useSignIn.ts`:
+
+```ts
+import { isSuccess } from 'aidbox-react/lib/libs/remoteData';
+import { notification } from 'antd';
+
+import { setToken, signin, SigninBody } from '../../services/auth';
+
+export function useSignIn() {
+    const onFinish = async (values: SigninBody) => {
+        const signinResponse = await signin(values);
+        if (isSuccess(signinResponse)) {
+            const { access_token } = signinResponse.data;
+            setToken(access_token);
+            window.location.reload();
+        } else {
+            notification.error({
+                message: signinResponse.error.error_description
+                    ? signinResponse.error.error_description
+                    : JSON.stringify(signinResponse.error),
+            });
+        }
+    };
+
+    const onFinishFailed = (errorInfo: any) => {
+        console.warn('Login error: ', errorInfo);
+    };
+
+    return { onFinish, onFinishFailed };
+}
+```
+
+Также добавим стили `SignIn.module.scss`:
+
+```scss
+.form {
+    margin: 10px;
+}
+```
+
+<!-- ### Configure Aidbox
+
+Изменим файл `system.edn` в директории `aidbox-project/zrc/system.edn`, добавив Client:
+
+```
+
 ``` -->
