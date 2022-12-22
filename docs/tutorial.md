@@ -264,10 +264,6 @@ components
 
 В директории `types` создайте файл `aidbox.ts` и поместите в него следующий [код с типами](https://gist.githubusercontent.com/atuonufure/185cea02866703405696b35493128a00/raw/82c142cf24dccc8078d7fe88ca3c7cf025564715/index.ts).
 
-## Utils
-
-Директория `utils` обычно используется для хранения утилитарных функций и другого служебного кода, который используется в проекте.
-
 ## Services
 
 В директории `services` создадим файлы `initialize.ts`, `config.ts` and `auth.ts`.
@@ -637,6 +633,42 @@ export function useSignIn() {
 }
 ```
 
+## Utils
+
+Директория `utils` обычно используется для хранения утилитарных функций и другого служебного кода, который используется в проекте.
+
+Добавим библиотеку `date-fns` для более удобной работы с датой:
+
+```bash
+yarn add date-fns
+```
+
+Создадим в директории `utils` файл `date.ts` с содержимым:
+
+```ts
+import { format, parseISO } from 'date-fns';
+
+const US_DATE_TIME_FORMAT = 'MM-dd-yyyy HH:mm';
+
+const formatFHIRDate = (date: string, formatType: string) => {
+    try {
+        return format(parseISO(date), formatType);
+    } catch {
+        console.error(`Invalid date format: ${date}`);
+        return String(date);
+    }
+};
+
+export const formatHumanDateTime = (date: string) => {
+    return formatFHIRDate(date, US_DATE_TIME_FORMAT);
+};
+
+export const formatHumanDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return format(date, 'yyyy-MM-dd');
+};
+```
+
 ## Prepare components
 
 Подготовим презентационные компоненты для дальнейшей разработки:
@@ -695,7 +727,59 @@ export function useAppHeader() {
 }
 ```
 
-<!-- ## Patients List
+### PatientsListTable
+
+Создадим компонент `PatientsListTable`, отвечающий за отображение списка пациентов:
+
+```tsx
+import { Table, Typography } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { Patient } from '../../types/aidbox';
+import { formatHumanDateTime } from '../../utils/date';
+
+interface PatientsListTableProps {
+    patientsList: Patient[];
+}
+
+export function PatientsListTable({ patientsList }: PatientsListTableProps) {
+    const navigate = useNavigate();
+
+    const goToPatientData = (patient: Patient) => navigate(`/patients/${patient.id}`);
+
+    const { Link } = Typography;
+
+    const dataSource = patientsList.map((patient: Patient) => {
+        return {
+            key: patient.id,
+            patient: (
+                <Link onClick={() => goToPatientData(patient)}>
+                    {patient.name ? String(patient.name[0].family) : patient.id}
+                </Link>
+            ),
+            lastUpdated: formatHumanDateTime(patient.meta?.lastUpdated || ''),
+        };
+    });
+
+    const columns = [
+        {
+            title: <b>Patient</b>,
+            dataIndex: 'patient',
+            key: 'patient',
+            width: '50%',
+        },
+        {
+            title: <b>Last updated</b>,
+            dataIndex: 'lastUpdated',
+            key: 'lastUpdated',
+            width: '50%',
+        },
+    ];
+
+    return <Table dataSource={dataSource} columns={columns} bordered />;
+}
+```
+
+## Patients List
 
 Обновим контейнер PatientsList:
 
@@ -744,8 +828,45 @@ export function PatientsList() {
         </>
     );
 }
+```
 
-``` -->
+Создадим для `PatientsList` файл `hooks.ts`: 
+
+```ts
+import { useService } from 'aidbox-react/lib/hooks/service';
+import { extractBundleResources, getFHIRResources } from 'aidbox-react/lib/services/fhir';
+import { mapSuccess } from 'aidbox-react/lib/services/service';
+import { useState } from 'react';
+import { Patient } from '../../types/aidbox';
+
+export function usePatientsList() {
+    const [showPatientModal, setShowPatientModal] = useState(false);
+
+    const [patientsRD, manager] = useService(async () => {
+        const response = await getFHIRResources<Patient>('Patient', {
+            _sort: '-_lastUpdated',
+        });
+        return mapSuccess(response, (bundle) => {
+            return extractBundleResources(bundle).Patient;
+        });
+    }, []);
+
+    const reloadPatientsList = () => {
+        manager.reload();
+    };
+
+    return { showPatientModal, setShowPatientModal, patientsRD, reloadPatientsList };
+}
+```
+
+Создадим стили для `PatientsList`:
+
+```scss
+.table {
+    margin: 0 10px;
+}
+```
+
 
 <!-- ### Configure Aidbox
 
