@@ -917,7 +917,7 @@ export function ObservationsDetails({
 
 ## Get and show resources
 
-### Get patients list
+### Patients list
 
 Let's update the PatientsList container:
 
@@ -1031,7 +1031,7 @@ Create styles for the `PatientsList`:
 }
 ```
 
-### Get observations list
+### Observations list
 
 Let's update the `ObservationsList` container:
 
@@ -1149,7 +1149,7 @@ export function useObservationsList() {
 }
 ```
 
-## Resource creation
+## Create and update resources
 
 ### Aidbox REST Console
 
