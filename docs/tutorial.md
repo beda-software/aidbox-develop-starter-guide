@@ -420,7 +420,7 @@ export function useApp() {
 }
 ```
 
-The `useService` hook is a utility provided by the aidbox-react library that allows you to easily make HTTP requests from a React component and manage the state of the request. It is similar to the `useEffect` hook in that it will execute a function when certain dependencies change, but it is specifically designed for making HTTP requests.
+The `useService` hook is a utility provided by the aidbox-react library that allows easily make HTTP requests from a React component and manage the state of the request. It is similar to the `useEffect` hook in that it will execute a function when certain dependencies change, but it is specifically designed for making HTTP requests.
 
 The `useService` hook takes an async function as an argument, which should contain the logic for making the HTTP request. The hook will handle setting the component's state to "loading" while the request is in progress, and will update the state with the response data or error if the request succeeds or fails.
 
@@ -970,11 +970,11 @@ export function PatientsList() {
 
 ### `getFHIRResources`
 
-The `getFHIRResources` function allows you to easily retrieve a list of FHIR resources from an Aidbox instance.
+The `getFHIRResources` function allows easily retrieve a list of FHIR resources from an Aidbox instance.
 
 ### `mapSuccess`
 
-The `mapSuccess` function allows you to transform the data of a successful RemoteDataResult object. It can be useful when you want to transform the data returned by an async function before it is consumed by a component, without having to check the state of the RemoteDataResult object in the component itself.
+The `mapSuccess` function allows transform the data of a successful RemoteDataResult object. It can be useful when you want to transform the data returned by an async function before it is consumed by a component, without having to check the state of the RemoteDataResult object in the component itself.
 
 ### `extractBundleResources`
 
@@ -1205,7 +1205,9 @@ GET /fhir/Patient?_format=yaml
 
 ### Create Patient resource
 
-The `saveFHIRResource` function is a utility function that allows you to create or update a FHIR resource in an Aidbox instance. It takes in a FHIR resource object and returns a Promise that resolves to a `RemoteDataResult` object. 
+### `saveFHIRResource`
+
+The `saveFHIRResource` function is a utility function that allows create or update a FHIR resource in an Aidbox instance. It takes in a FHIR resource object and returns a Promise that resolves to a `RemoteDataResult` object. 
 
 Let's add a modal window component with a form to create the `Patient` resource:
 
