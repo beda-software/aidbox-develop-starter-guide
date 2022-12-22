@@ -917,7 +917,7 @@ export function ObservationsDetails({
 
 ## Get and show resources
 
-### Patients list
+### Get patients list
 
 Let's update the PatientsList container:
 
@@ -1031,7 +1031,7 @@ Create styles for the `PatientsList`:
 }
 ```
 
-### Observations list
+### Get observations list
 
 Let's update the `ObservationsList` container:
 
