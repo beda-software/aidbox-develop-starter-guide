@@ -9,7 +9,7 @@ const config = {
     title: 'aidbox-develop-starter-guide ',
     tagline: 'work in progress',
     url: 'https://your-docusaurus-test-site.com',
-    baseUrl: '/',
+    baseUrl: '/aidbox-develop-starter-guide/',
     onBrokenLinks: 'throw',
     onBrokenMarkdownLinks: 'warn',
     favicon: 'img/favicon.ico',
