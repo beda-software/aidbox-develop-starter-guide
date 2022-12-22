@@ -968,6 +968,27 @@ export function PatientsList() {
 }
 ```
 
+### `getFHIRResources`
+
+The `getFHIRResources` function allows you to easily retrieve a list of FHIR resources from an Aidbox instance.
+
+### `mapSuccess`
+
+The `mapSuccess` function allows you to transform the data of a successful RemoteDataResult object. It can be useful when you want to transform the data returned by an async function before it is consumed by a component, without having to check the state of the RemoteDataResult object in the component itself.
+
+### `extractBundleResources`
+
+`extractBundleResources` is a utility function that takes a FHIR Bundle resource and extracts the individual resources that are contained within it. The function returns an object with keys for each resource type, and the value for each key is an array of resources of that type.
+
+For example, if the Bundle resource contains 2 Patient resources and 3 Observation resources, the returned object would look like this:
+
+```ts
+{
+  Patient: [patient1, patient2],
+  Observation: [observation1, observation2, observation3]
+}
+```
+
 Create a file `hooks.ts` for `PatientsList`:
 
 ```ts
@@ -1061,6 +1082,14 @@ export function ObservationsList() {
     );
 }
 ```
+
+### `getFHIRResource`
+
+`getFHIRResource` is a function that is used to retrieve a single FHIR resource from a server. It takes an object as an argument, which should contain the resourceType of the resource being requested and the id of the specific resource. It returns a Promise that resolves to a `RemoteDataResult` object.
+
+### `sequenceMap`
+
+`sequenceMap` is a function that takes an object containing `RemoteData` values as its argument, and returns a new `RemoteData` value that represents the combination of all of the input `RemoteData` values. If all of the input `RemoteData` values are successful, then the returned `RemoteData` value will be successful and will contain an object with the same keys as the input object, but with the successful data values as the values. If any of the input `RemoteData` values are not successful, then the returned `RemoteData` value will be not successful and will contain the error value of the first not successful input `RemoteData` value.
 
 Add `hooks.ts` for `ObservationsList`:
 
@@ -1176,7 +1205,7 @@ GET /fhir/Patient?_format=yaml
 
 ### Create Patient resource
 
-With the `saveFHIRResource` method from the `aidbox-react` library, we can create or update resources.
+The `saveFHIRResource` function is a utility function that allows you to create or update a FHIR resource in an Aidbox instance. It takes in a FHIR resource object and returns a Promise that resolves to a `RemoteDataResult` object. 
 
 Let's add a modal window component with a form to create the `Patient` resource:
 
@@ -1450,5 +1479,9 @@ export function ObservationsDetails({
     );
 }
 ```
+
+## Summary
+
+In this tutorial, we have tried to create a solid foundation for using `aidbox-react` to develop stable and scalable healthcare applications. Using the tutorial, we learned how to create a small MVP application and became familiar with the basic methods and features offered by the `aidbox-react` library. These tools allowed us to easily retrieve and manipulate data from the aidbox server, simplifying the process of building our application.
 
 <!-- TODO: ### Configure Aidbox -->
