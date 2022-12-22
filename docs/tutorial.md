@@ -8,11 +8,7 @@ title: Tutorial
 ## Intro
 
 Welcome to the tutorial! In this tutorial, we will be creating a MVP application
-for doctors in laboratories to use for determining \*hemoglobin levels.
-
-<sub><sup>\*Hemoglobin is a protein found in the blood that is responsible
-for transporting oxygen throughout the body.
-It is measured in units per deciliter of blood (g/dL).</sup></sub>
+for doctors in laboratories to use for determining hemoglobin levels. Hemoglobin is a protein found in the blood that is responsible for transporting oxygen throughout the body. It is measured in units per deciliter of blood (g/dL).
 
 ## Features
 
@@ -26,13 +22,9 @@ It is measured in units per deciliter of blood (g/dL).</sup></sub>
 
 Create a directory with any name, in the tutorial it will be called `main-directory`.
 
+### Aidbox project
+
 In the `main-directory`, create and launch an [Aidbox application](https://www.health-samurai.io/aidbox) by following the [guide on the official Aidbox documentation site](https://docs.aidbox.app/getting-started/run-aidbox-locally-with-docker).
-
-Next, in the `main-directory` create a React application with the command:
-
-```bash
-yarn create react-app frontend --template typescript
-```
 
 Let's add some improvements to the application's aidbox port and project structure:
 
@@ -44,6 +36,18 @@ Let's add some improvements to the application's aidbox port and project structu
 - AIDBOX_PORT=8888
 + AIDBOX_PORT=8080
 ...
+```
+
+In the `aidbox-project/zrc/system.edn` file replace `["client_credentials" "basic"]`with
+
+`["client_credentials" "password"]`.
+
+### React app
+
+Next, in the `main-directory` create a React application with the command:
+
+```bash
+yarn create react-app frontend --template typescript
 ```
 
 You should end up with this file structure:
@@ -100,7 +104,7 @@ root.render(
 );
 ```
 
-Добавим Typescript настройки, создав файл `tsconfig.json:` в директории `frontend`:
+Add Typescript settings by creating a file `tsconfig.json` in the `frontend` directory:
 
 ```json
 {
@@ -146,7 +150,7 @@ module.exports = {
 };
 ```
 
-Добавим в package.json скрипт для форматирования всех файлов:
+Add a script to `package.json` to format all the files:
 
 ```json
 "scripts": {
@@ -156,13 +160,13 @@ module.exports = {
 },
 ```
 
-Соответсвенно форматриуем все файлы командой в консоли:
+Format all files with a command in the console:
 
 ```bash
 npm run format
 ```
 
-Создадим в директории `src` несколько новых директорий:
+Create new directories in the `src` directory:
 
 -   `components`
 -   `containers`
@@ -170,7 +174,7 @@ npm run format
 -   `types`
 -   `utils`
 
-В итоге наша структура будет такого вида:
+As a result, our structure will look like this:
 
 ```bash
 main-directory/
@@ -203,36 +207,35 @@ main-directory/
     └── yarn.lock
 ```
 
-## Компоненты
+## Components
 
-Компоненты принятно делить на `smart` и `dumb`.
+It is common to separate the components into `smart` and `dumb`.
 
--   `smart` компоненты помещаем в директорию `containers`
--   `dumb` компоненты помещаем в папку `components`
+-   The `smart` components are placed in the directory `containers`.
+-   Put `dumb` components in the directory `components`.
 
-В директории `containers` создадим директорию `App` и переместим в нее `App.tsx` компонент.
-Переименуем его в `index.tsx`.
+In the directory `containers` create a directory `App` and put there `App.tsx` component.
+Rename it to `index.tsx`.
 
-Для роутинга мы будем использовать библиотеку [React Router](https://reactrouter.com/).
+For routing, we will use the [React Router](https://reactrouter.com/) library.
 
-Для более быстрой разработки также будем использовать библиотеку компонент [Ant Design](https://ant.design/)
+For faster development we will also use the [Ant Design](https://ant.design/) component library.
 
-Основным инструментом, на изучение которого направлен данный туториал,
-является библиотека [aidbox-react](https://www.npmjs.com/package/aidbox-react).
+The main tool this tutorial aims to study is the [aidbox-react](https://www.npmjs.com/package/aidbox-react) library.
 
-Добавим данные инструменты:
+Add these packages:
 
 ```bash
 yarn add aidbox-react react-router-dom antd
 ```
 
-В приложении будет 3 контейнера-компоненты:
+There will be 3 "smart" components in the application:
 
 -   App
 -   Patients list
 -   Observations list
 
-Создадим контейнеры PatientsList и ObservationsList в директории `src/containers`:
+Create the `PatientsList` and `ObservationsList` containers in the `src/containers` directory:
 
 ```
 containers
@@ -244,7 +247,7 @@ containers
     ├── index.tsx
 ```
 
-Создадим компоненты `SignIn`, `AlertFailure`, `Loader` в директории `src/components`:
+Create components `SignIn`, `AlertFailure`, `Loader` in `src/components` directory:
 
 ```
 components
@@ -258,15 +261,15 @@ components
 
 ## Aidbox types
 
-С помощтюу утилиты [aidbox-ts-generator](https://github.com/beda-software/aidbox-ts-generator) генерируется файл с TypeScript типами для FHIR ресурсов.
+The [aidbox-ts-generator](https://github.com/beda-software/aidbox-ts-generator) utility generates a file with TypeScript types for FHIR resources.
 
-В директории `types` создайте файл `aidbox.ts` и поместите в него следующий [код с типами](https://gist.githubusercontent.com/atuonufure/185cea02866703405696b35493128a00/raw/82c142cf24dccc8078d7fe88ca3c7cf025564715/index.ts).
+In the `types` directory, create a file `aidbox.ts` and put the following [code with types](https://gist.githubusercontent.com/atuonufure/185cea02866703405696b35493128a00/raw/82c142cf24dccc8078d7fe88ca3c7cf025564715/index.ts) in it.
 
 ## Services
 
-В директории `services` создадим файлы `initialize.ts`, `config.ts` and `auth.ts`.
+Create files `initialize.ts`, `config.ts` and `auth.ts` in directory `services`.
 
-Добавим в `config.ts` следующий код:
+Add the following code to `config.ts`:
 
 ```ts
 export default {
@@ -276,9 +279,9 @@ export default {
 };
 ```
 
-Это конфигурационный файл, в котором будет указаны настройки для обращения к приложению Aidbox.
+This is the configuration file that will specify the settings for accessing the Aidbox application.
 
-Добавим в `initialize.ts` следующий код:
+Add the following code to `initialize.ts`:
 
 ```ts
 import { setInstanceBaseURL } from 'aidbox-react/lib/services/instance';
@@ -290,9 +293,9 @@ export function init(baseURL?: string) {
 }
 ```
 
-С помощью функции `init` мы установим url на который будут отправляться запросы.
+With the `init` function we will set the url to which the requests will be sent.
 
-Добавим в `auth.ts` следующий код:
+Add the following code to `auth.ts`:
 
 ```ts
 import { service } from 'aidbox-react/lib/services/service';
@@ -345,13 +348,48 @@ export function signin(data: SigninBody): Promise<RemoteDataResult> {
 }
 ```
 
-Функции в файле `auth.ts` используются для управления сеансом пользователя, получения информации о нем, а также для входа или выхода пользователя из приложения.
+The functions in the `auth.ts` file are used to manage the user's session, to get information about the user, and to log the user in or out of the application.
 
-`service({...axiosConfig})` Basic function for making requests. WIP
+## `service({...axiosConfig})`
 
-## RenderRemoteData
+This is a utility function that is used to make HTTP requests to an Aidbox server.
 
-Создадим файл `hooks.ts` в директории `containers/App`:
+The `service` function returns a Promise that resolves to a `RemoteDataResult` object.
+
+The `RemoteDataResult` object can be in one of states: "not asked", "loading", or "success/failure".
+
+- If the `RemoteDataResult` object is in the "not asked" state, it means that the asynchronous operation has not yet been initiated.
+
+- If the `RemoteDataResult` object is in the "loading" state, it means that the asynchronous operation is in progress.
+
+- If the `RemoteDataResult` object is in the "success/failure" state, it means that the asynchronous operation has completed. If the operation was successful, the `RemoteDataResult` object will have a data property containing the response data. If the operation failed, the `RemoteDataResult` object will have an error property containing an error object.
+
+The aidbox-react library provides utility functions like `isSuccess`, and `isFailure` that you can use to check the state of a `RemoteDataResult` object and take appropriate action based on the state.
+
+Here is an example of how the `service` function can be used:
+
+```ts
+import { service } from 'aidbox-react/lib/services/service';
+
+const result = await service({
+    method: 'GET',
+    url: '/Patient',
+});
+
+if (isSuccess(result)) {
+    // The request was successful, and the response data is available in result.data
+    console.log(result.data);
+} else if (isFailure(result)) {
+    // The request failed, and the error is available in result.error
+    console.error(result.error);
+}
+```
+
+## `useService`
+
+In most cases, we put the logic into custom hooks for better readability, reuse and testing.
+
+Create a file `hooks.ts` in the directory `containers/App`:
 
 ```ts
 import { useService } from 'aidbox-react/lib/hooks/service';
@@ -382,9 +420,13 @@ export function useApp() {
 }
 ```
 
-В большинстве случаев логику выносим в кастомные хуки для лучшей читаемости, переиспользования и тестирования.
+The `useService` hook is a utility provided by the aidbox-react library that allows you to easily make HTTP requests from a React component and manage the state of the request. It is similar to the `useEffect` hook in that it will execute a function when certain dependencies change, but it is specifically designed for making HTTP requests.
 
-Далее изменим код в `App.tsx':
+The `useService` hook takes an async function as an argument, which should contain the logic for making the HTTP request. The hook will handle setting the component's state to "loading" while the request is in progress, and will update the state with the response data or error if the request succeeds or fails.
+
+## `RenderRemoteData`
+
+Next, change the code in `App.tsx':
 
 ```tsx
 import { RenderRemoteData } from 'aidbox-react/lib/components/RenderRemoteData';
@@ -428,19 +470,19 @@ export function App() {
 }
 ```
 
-`RenderRemoteData` - это компонент, который используется для рендеринга различного содержимого в зависимости от состояния объекта \*RemoteData.
+The `RenderRemoteData` component is used to render different content depending on the state of the `RemoteData` object.
 
-Компонент `RenderRemoteData` принимает несколько параметров:
+The `RenderRemoteData` component takes several parameters:
 
--   `remoteData`: этот параметр представляет собой объект RemoteData.
+- `remoteData`: this parameter represents a `RemoteData` object.
 
--   `renderFailure`: этот параметр представляет собой функцию, которая возвращает компонент, если объект RemoteData находится в состоянии Failure. В данном случае свойство `renderFailure` - это функция, которая возвращает компонент `AlertFailure`.
+- `renderFailure`: this parameter represents a function that returns the component if the `RemoteData` object is in `Failure` state. In this case, the `renderFailure` property is a function that returns the `AlertFailure` component.
 
--   `renderLoading`: этот параметр представляет собой функцию, которая возвращает компонент, если объект RemoteData находится в состоянии loading. В этом случае свойство `renderLoading` является функцией, возвращающей компонент Loader.
+- `renderLoading`: This parameter is a function that returns the component if the `RemoteData` object is in the `loading` state. In this case, the `renderLoading` property is a function that returns the `Loader` component.
 
-Компонент `RenderRemoteData` также имеет дочерний параметр, который представляет собой функцию, возвращающую компонент, если объект RemoteData находится в состоянии Success.
+The `RenderRemoteData` component also has a child parameter, which is a function that returns the component if the `RemoteData` object is in the `Success` state.
 
-\*RemoteData is a wrapper over data.
+`RemoteData` is a wrapper over data.
 
 It could have four statuses:
 
@@ -449,12 +491,12 @@ It could have four statuses:
 -   Loading
 -   NotAsked
 
-RemoteDataResult is a subset of RemoteData and it could have two statuses:
+`RemoteDataResult` is a subset of `RemoteData` and it could have two statuses:
 
 -   Success
 -   Failure
 
-When we make a request to a server with any of library's methods, we'll probably get RemoteData as a result. Then we can easily check what've got.
+When we make a request to a server with any of `aidbox-react` methods, we'll probably get `RemoteData` as a result. Then we can easily check what've got.
 
 ## Approach to stylization
 
@@ -512,7 +554,7 @@ In `App.tsx` change the code:
 ...
 ```
 
-Изменим `Loader` компонент:
+Change the `Loader` component:
 
 ```tsx
 import { Spin } from 'antd';
@@ -527,7 +569,7 @@ export function Loader() {
 }
 ```
 
-Также добавим к нему стили `Loader.module.scss`:
+Also add the styles `Loader.module.scss` to it:
 
 ```scss
 .container {
@@ -585,7 +627,7 @@ export function SignIn() {
 }
 ```
 
-В директории `SignIn` создадим хук `useSignIn.ts`:
+In the `SignIn` directory create a hook `useSignIn.ts`:
 
 ```ts
 import { isSuccess } from 'aidbox-react/lib/libs/remoteData';
@@ -617,7 +659,7 @@ export function useSignIn() {
 }
 ```
 
-Также добавим стили `SignIn.module.scss`:
+Also add the styles `SignIn.module.scss`:
 
 ```scss
 .form {
@@ -627,15 +669,15 @@ export function useSignIn() {
 
 ## Utils
 
-Директория `utils` обычно используется для хранения утилитарных функций и другого служебного кода, который используется в проекте.
+The `utils` directory is normally used to store utility functions and other service code used in the project.
 
-Добавим библиотеку `date-fns` для более удобной работы с датой:
+Let's add the `date-fns` library to make working with date more convenient:
 
 ```bash
 yarn add date-fns
 ```
 
-Создадим в директории `utils` файл `date.ts` с содержимым:
+Create a file `date.ts` in the `utils` directory with the contents:
 
 ```ts
 import { format, parseISO } from 'date-fns';
@@ -663,11 +705,9 @@ export const formatHumanDate = (dateString: string) => {
 
 ## Prepare components
 
-Подготовим презентационные компоненты для дальнейшей разработки:
+Prepare `dump` components:
 
 ### AppHeader
-
-Создадим компонент `AppHeader`:
 
 ```tsx
 import { Button, Space } from 'antd';
@@ -691,7 +731,7 @@ export function AppHeader({ children }: AppHeaderProps) {
 }
 ```
 
-Хук `useAppHeader.ts` для `AppHeader`:
+Hook `useAppHeader.ts` for `AppHeader`:
 
 ```ts
 import { logout } from '../../services/auth';
@@ -708,7 +748,7 @@ export function useAppHeader() {
 }
 ```
 
-Стили для `AppHeader`:
+Styles for `AppHeader`:
 
 ```scss
 .container {
@@ -721,7 +761,7 @@ export function useAppHeader() {
 
 ### PatientsListTable
 
-Создадим компонент `PatientsListTable`, отвечающий за отображение списка пациентов:
+Create a component `PatientsListTable` that displays a list of patients:
 
 ```tsx
 import { Table, Typography } from 'antd';
@@ -772,6 +812,8 @@ export function PatientsListTable({ patientsList }: PatientsListTableProps) {
 ```
 
 ### ObservationsListTable
+
+Create a component that displays the observations list for the patient:
 
 ```tsx
 import { Table } from 'antd';
@@ -877,7 +919,7 @@ export function ObservationsDetails({
 
 ### Patients list
 
-Обновим контейнер PatientsList:
+Let's update the PatientsList container:
 
 ```tsx
 import { RenderRemoteData } from 'aidbox-react/lib/components/RenderRemoteData';
@@ -926,7 +968,7 @@ export function PatientsList() {
 }
 ```
 
-Создадим для `PatientsList` файл `hooks.ts`:
+Create a file `hooks.ts` for `PatientsList`:
 
 ```ts
 import { useService } from 'aidbox-react/lib/hooks/service';
@@ -960,7 +1002,7 @@ export function usePatientsList() {
 }
 ```
 
-Создадим стили для `PatientsList`:
+Create styles for the `PatientsList`:
 
 ```scss
 .table {
@@ -970,7 +1012,7 @@ export function usePatientsList() {
 
 ### Observations list
 
-Обновим контейнер `ObservationsList`:
+Let's update the `ObservationsList` container:
 
 ```tsx
 import { RenderRemoteData } from 'aidbox-react/lib/components/RenderRemoteData';
@@ -1020,7 +1062,7 @@ export function ObservationsList() {
 }
 ```
 
-Добавим `hooks.ts` для `ObservationsList`:
+Add `hooks.ts` for `ObservationsList`:
 
 ```ts
 import { useService } from 'aidbox-react/lib/hooks/service';
@@ -1082,7 +1124,7 @@ export function useObservationsList() {
 
 ### Aidbox REST Console
 
-Добавим через REST консоль ресурс `Patient` используя `yaml` формат:
+Let's add a `Patient` resource via Aidbox REST console using `yaml` format:
 
 ```yaml
 POST /fhir/Patient
@@ -1093,7 +1135,7 @@ id: pt-1
 name: [{family: 'John'}]
 ```
 
-Мы также можем использовать json формат, добавим для пациента `Observation` используя `json` формат:
+We can also use `json` format, add `Observation` for the patient using `json` format:
 
 ```json
 POST /fhir/Observation
@@ -1125,8 +1167,8 @@ content-type: application/json
 }
 ```
 
-С помощью консоли мы также можем получать ресурсы, используя GET запрос.
-Например, мы можем получить [Bundle](https://www.hl7.org/fhir/bundle.html) пациентов, написав команду:
+With the Aidbox REST console, we can also retrieve resources using a GET request.
+For example, we can get [Bundle](https://www.hl7.org/fhir/bundle.html) patients by writing the command:
 
 ```
 GET /fhir/Patient?_format=yaml
@@ -1134,9 +1176,9 @@ GET /fhir/Patient?_format=yaml
 
 ### Create Patient resource
 
-С помощью метода `saveFHIRResource` из библиотеки `aidbox-react` мы можем создавать или обновлять ресурсы.
+With the `saveFHIRResource` method from the `aidbox-react` library, we can create or update resources.
 
-Добавим компонент модального окна с формой для создания ресурса `Patient`:
+Let's add a modal window component with a form to create the `Patient` resource:
 
 ```tsx
 import { isFailure, isSuccess } from 'aidbox-react/lib/libs/remoteData';
@@ -1216,9 +1258,9 @@ export function AddPatientModal({
 }
 ```
 
-Функции `isFailure` и `isSuccess` используются для определения статуса результата запроса.
+The functions `isFailure` and `isSuccess` are used to determine the status of the query result.
 
-Изменим контейнер PatientsList в соответствии с параметрами необходимыми для компонента `AddPatientModal`:
+Let's change the `PatientsList` container according to the parameters required for the `AddPatientModal` component:
 
 ```tsx
 import { RenderRemoteData } from 'aidbox-react/lib/components/RenderRemoteData';
@@ -1269,7 +1311,7 @@ export function PatientsList() {
 
 ### Create Observation resource
 
-Добавим компонент модального окна с формой для создания ресурса `Observation`:
+Let's add a modal window component with a form to create the `Observation` resource:
 
 ```tsx
 import { isFailure, isSuccess } from 'aidbox-react/lib/libs/remoteData';
@@ -1363,7 +1405,7 @@ export function AddObservationModal({
 }
 ```
 
-Обновим `ObservationsDetails` в соответствии с параметрами компонента `AddObservationModal`:
+Update `ObservationsDetails` according to the parameters of the `AddObservationModal` component:
 
 ```tsx
 import { Space, Typography } from 'antd';
@@ -1409,10 +1451,4 @@ export function ObservationsDetails({
 }
 ```
 
-<!-- ### Configure Aidbox
-
-Изменим файл `system.edn` в директории `aidbox-project/zrc/system.edn`, добавив Client:
-
-```
-
-``` -->
+<!-- TODO: ### Configure Aidbox -->
