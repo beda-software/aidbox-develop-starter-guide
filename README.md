@@ -1,8 +1,6 @@
 # aidbox-develop-starter-guide
 
-Starter guide for developing application based on Aidbox.
-
-Tutorial avalable here: https://beda-software.github.io/aidbox-develop-starter-guide/
+[Starter guide](https://beda-software.github.io/aidbox-develop-starter-guide/) for developing application based on Aidbox.
 
 ## Development
 
