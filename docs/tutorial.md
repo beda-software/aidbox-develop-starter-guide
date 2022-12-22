@@ -867,6 +867,52 @@ export function usePatientsList() {
 }
 ```
 
+## Aidbox REST Console
+
+Добавим через REST консоль ресурс `Patient` используя `yaml` формат:
+
+```yaml
+POST /fhir/Patient
+accept: text/yaml
+content-type: text/yaml
+
+id: pt-1
+name: [{family: 'John'}]
+```
+
+Мы также можем использовать json формат, добавим для пациента `Observation` используя `json` формат:
+
+```json
+POST /fhir/Observation
+accept: application/json
+content-type: application/json
+
+{
+    "status": "final",
+    "code": {
+        "coding": [
+            {
+                "system": "http://loinc.org",
+                "code": "718-7",
+                "display": "Hemoglobin [Mass/volume] in Blood"
+            }
+        ]
+    },
+    "effectiveDateTime": "2022-12-15T06:09:20.881Z",
+    "value": {
+        "Quantity": {
+            "value": 6,
+            "unit": "g/dL"
+        }
+    },
+    "subject": {
+        "reference": "Patient/pt-1",
+        "display": "John"
+    }
+}
+```
+
+
 
 <!-- ### Configure Aidbox
 
