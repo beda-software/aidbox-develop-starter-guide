@@ -436,7 +436,7 @@ export function App() {
 }
 ```
 
-`RenderRemoteData` - это компонент, который используется для рендеринга различного содержимого в зависимости от состояния объекта *RemoteData.
+`RenderRemoteData` - это компонент, который используется для рендеринга различного содержимого в зависимости от состояния объекта \*RemoteData.
 
 Компонент `RenderRemoteData` принимает несколько параметров:
 
@@ -448,7 +448,7 @@ export function App() {
 
 Компонент `RenderRemoteData` также имеет дочерний параметр, который представляет собой функцию, возвращающую компонент, если объект RemoteData находится в состоянии Success.
 
-*RemoteData is a wrapper over data.
+\*RemoteData is a wrapper over data.
 
 It could have four statuses:
 
@@ -549,79 +549,79 @@ export function Loader() {
 Add the following code to the `SignIn` component:
 
 ```tsx
-import { Button, Form, Input, Space, Typography } from 'antd';
-import { useSignIn } from './useSignIn';
-import s from './SignIn.module.scss';
+import { Button, Form, Input, Space, Typography } from "antd";
+import { useSignIn } from "./useSignIn";
+import s from "./SignIn.module.scss";
 
 export function SignIn() {
-    const { onFinish, onFinishFailed } = useSignIn();
+  const { onFinish, onFinishFailed } = useSignIn();
 
-    const { Text } = Typography;
+  const { Text } = Typography;
 
-    return (
-        <Space>
-            <Form
-                name="basic"
-                initialValues={{ remember: true }}
-                onFinish={onFinish}
-                onFinishFailed={onFinishFailed}
-                autoComplete="off"
-                className={s.form}
-            >
-                <Text>Username</Text>
-                <Form.Item
-                    name="email"
-                    rules={[{ required: true, message: 'Please input your username!' }]}
-                >
-                    <Input placeholder="username" />
-                </Form.Item>
-                <Text>Password</Text>
-                <Form.Item
-                    name="password"
-                    rules={[{ required: true, message: 'Please input your password!' }]}
-                >
-                    <Input.Password placeholder="password" />
-                </Form.Item>
-                <Form.Item>
-                    <Button type="primary" htmlType="submit">
-                        Login
-                    </Button>
-                </Form.Item>
-            </Form>
-        </Space>
-    );
+  return (
+    <Space>
+      <Form
+        name="basic"
+        initialValues={{ remember: true }}
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
+        autoComplete="off"
+        className={s.form}
+      >
+        <Text>Username</Text>
+        <Form.Item
+          name="email"
+          rules={[{ required: true, message: "Please input your username!" }]}
+        >
+          <Input placeholder="username" />
+        </Form.Item>
+        <Text>Password</Text>
+        <Form.Item
+          name="password"
+          rules={[{ required: true, message: "Please input your password!" }]}
+        >
+          <Input.Password placeholder="password" />
+        </Form.Item>
+        <Form.Item>
+          <Button type="primary" htmlType="submit">
+            Login
+          </Button>
+        </Form.Item>
+      </Form>
+    </Space>
+  );
 }
 ```
 
 В директории `SignIn` создадим хук `useSignIn.ts`:
 
 ```ts
-import { isSuccess } from 'aidbox-react/lib/libs/remoteData';
-import { notification } from 'antd';
+import { isSuccess } from "aidbox-react/lib/libs/remoteData";
+import { notification } from "antd";
 
-import { setToken, signin, SigninBody } from '../../services/auth';
+import { setToken, signin, SigninBody } from "../../services/auth";
 
 export function useSignIn() {
-    const onFinish = async (values: SigninBody) => {
-        const signinResponse = await signin(values);
-        if (isSuccess(signinResponse)) {
-            const { access_token } = signinResponse.data;
-            setToken(access_token);
-            window.location.reload();
-        } else {
-            notification.error({
-                message: signinResponse.error.error_description
-                    ? signinResponse.error.error_description
-                    : JSON.stringify(signinResponse.error),
-            });
-        }
-    };
+  const onFinish = async (values: SigninBody) => {
+    const signinResponse = await signin(values);
+    if (isSuccess(signinResponse)) {
+      const { access_token } = signinResponse.data;
+      setToken(access_token);
+      window.location.reload();
+    } else {
+      notification.error({
+        message: signinResponse.error.error_description
+          ? signinResponse.error.error_description
+          : JSON.stringify(signinResponse.error),
+      });
+    }
+  };
 
-    const onFinishFailed = (errorInfo: any) => {
-        console.warn('Login error: ', errorInfo);
-    };
+  const onFinishFailed = (errorInfo: any) => {
+    console.warn("Login error: ", errorInfo);
+  };
 
-    return { onFinish, onFinishFailed };
+  return { onFinish, onFinishFailed };
 }
 ```
 
@@ -629,7 +629,7 @@ export function useSignIn() {
 
 ```scss
 .form {
-    margin: 10px;
+  margin: 10px;
 }
 ```
 
@@ -646,26 +646,26 @@ yarn add date-fns
 Создадим в директории `utils` файл `date.ts` с содержимым:
 
 ```ts
-import { format, parseISO } from 'date-fns';
+import { format, parseISO } from "date-fns";
 
-const US_DATE_TIME_FORMAT = 'MM-dd-yyyy HH:mm';
+const US_DATE_TIME_FORMAT = "MM-dd-yyyy HH:mm";
 
 const formatFHIRDate = (date: string, formatType: string) => {
-    try {
-        return format(parseISO(date), formatType);
-    } catch {
-        console.error(`Invalid date format: ${date}`);
-        return String(date);
-    }
+  try {
+    return format(parseISO(date), formatType);
+  } catch {
+    console.error(`Invalid date format: ${date}`);
+    return String(date);
+  }
 };
 
 export const formatHumanDateTime = (date: string) => {
-    return formatFHIRDate(date, US_DATE_TIME_FORMAT);
+  return formatFHIRDate(date, US_DATE_TIME_FORMAT);
 };
 
 export const formatHumanDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return format(date, 'yyyy-MM-dd');
+  const date = new Date(dateString);
+  return format(date, "yyyy-MM-dd");
 };
 ```
 
@@ -678,41 +678,41 @@ export const formatHumanDate = (dateString: string) => {
 Создадим компонент `AppHeader`:
 
 ```tsx
-import { Button, Space } from 'antd';
-import s from './AppHeader.module.scss';
-import { useAppHeader } from './useAppHeader';
+import { Button, Space } from "antd";
+import s from "./AppHeader.module.scss";
+import { useAppHeader } from "./useAppHeader";
 
 interface AppHeaderProps {
-    children?: JSX.Element;
+  children?: JSX.Element;
 }
 
 export function AppHeader({ children }: AppHeaderProps) {
-    const { onLogout } = useAppHeader();
-    return (
-        <Space size="middle" className={s.container}>
-            {children}
-            <Button key="logout" onClick={onLogout}>
-                Logout
-            </Button>
-        </Space>
-    );
+  const { onLogout } = useAppHeader();
+  return (
+    <Space size="middle" className={s.container}>
+      {children}
+      <Button key="logout" onClick={onLogout}>
+        Logout
+      </Button>
+    </Space>
+  );
 }
 ```
 
 Хук `useAppHeader.ts` для `AppHeader`:
 
 ```ts
-import { logout } from '../../services/auth';
+import { logout } from "../../services/auth";
 
 export function useAppHeader() {
-    const onLogout = () => {
-        logout();
-        window.location.reload();
-    };
+  const onLogout = () => {
+    logout();
+    window.location.reload();
+  };
 
-    return {
-        onLogout,
-    };
+  return {
+    onLogout,
+  };
 }
 ```
 
@@ -720,10 +720,10 @@ export function useAppHeader() {
 
 ```scss
 .container {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px;
 }
 ```
 
@@ -732,130 +732,249 @@ export function useAppHeader() {
 Создадим компонент `PatientsListTable`, отвечающий за отображение списка пациентов:
 
 ```tsx
-import { Table, Typography } from 'antd';
-import { useNavigate } from 'react-router-dom';
-import { Patient } from '../../types/aidbox';
-import { formatHumanDateTime } from '../../utils/date';
+import { Table, Typography } from "antd";
+import { useNavigate } from "react-router-dom";
+import { Patient } from "../../types/aidbox";
+import { formatHumanDateTime } from "../../utils/date";
 
 interface PatientsListTableProps {
-    patientsList: Patient[];
+  patientsList: Patient[];
 }
 
 export function PatientsListTable({ patientsList }: PatientsListTableProps) {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const goToPatientData = (patient: Patient) => navigate(`/patients/${patient.id}`);
+  const goToPatientData = (patient: Patient) =>
+    navigate(`/patients/${patient.id}`);
 
-    const { Link } = Typography;
+  const { Link } = Typography;
 
-    const dataSource = patientsList.map((patient: Patient) => {
-        return {
-            key: patient.id,
-            patient: (
-                <Link onClick={() => goToPatientData(patient)}>
-                    {patient.name ? String(patient.name[0].family) : patient.id}
-                </Link>
-            ),
-            lastUpdated: formatHumanDateTime(patient.meta?.lastUpdated || ''),
-        };
-    });
+  const dataSource = patientsList.map((patient: Patient) => {
+    return {
+      key: patient.id,
+      patient: (
+        <Link onClick={() => goToPatientData(patient)}>
+          {patient.name ? String(patient.name[0].family) : patient.id}
+        </Link>
+      ),
+      lastUpdated: formatHumanDateTime(patient.meta?.lastUpdated || ""),
+    };
+  });
 
-    const columns = [
-        {
-            title: <b>Patient</b>,
-            dataIndex: 'patient',
-            key: 'patient',
-            width: '50%',
-        },
-        {
-            title: <b>Last updated</b>,
-            dataIndex: 'lastUpdated',
-            key: 'lastUpdated',
-            width: '50%',
-        },
-    ];
+  const columns = [
+    {
+      title: <b>Patient</b>,
+      dataIndex: "patient",
+      key: "patient",
+      width: "50%",
+    },
+    {
+      title: <b>Last updated</b>,
+      dataIndex: "lastUpdated",
+      key: "lastUpdated",
+      width: "50%",
+    },
+  ];
 
-    return <Table dataSource={dataSource} columns={columns} bordered />;
+  return <Table dataSource={dataSource} columns={columns} bordered />;
 }
 ```
 
-## Patients List
+### ObservationsListTable
+
+```tsx
+import { Table } from "antd";
+import { Observation } from "../../types/aidbox";
+import { formatHumanDateTime } from "../../utils/date";
+
+interface ObservationsListTableProps {
+  observationsList: Observation[];
+}
+
+export function ObservationsListTable({
+  observationsList,
+}: ObservationsListTableProps) {
+  const dataSource = observationsList.map((observation) => {
+    return {
+      key: observation.id,
+      observation: observation.value?.Quantity?.value,
+      unit: observation.value?.Quantity?.unit,
+      dateTime: formatHumanDateTime(observation.effective?.dateTime || ""),
+      lastUpdated: formatHumanDateTime(observation.meta?.lastUpdated || ""),
+    };
+  });
+
+  const columns = [
+    {
+      title: <b>Value</b>,
+      dataIndex: "observation",
+      key: "observation",
+      width: "25%",
+    },
+    {
+      title: <b>Unit</b>,
+      dataIndex: "unit",
+      key: "unit",
+      width: "25%",
+    },
+    {
+      title: <b>Date & Time</b>,
+      dataIndex: "dateTime",
+      key: "dateTime",
+      width: "25%",
+    },
+    {
+      title: <b>Last updated</b>,
+      dataIndex: "lastUpdated",
+      key: "lastUpdated",
+      width: "25%",
+    },
+  ];
+
+  return <Table dataSource={dataSource} columns={columns} bordered />;
+}
+```
+
+### ObservationDetails
+
+```tsx
+import { Space, Typography } from "antd";
+import { Observation, Patient } from "../../types/aidbox";
+import { ObservationsListTable } from "../ObservationsListTable";
+import s from "./ObservationsDetails.module.scss";
+
+interface ObservationsDetailsProps {
+  showObservationModal: boolean;
+  setShowObservationModal: (showObservationModal: boolean) => void;
+  patient: Patient;
+  observationsList: Observation[];
+  reloadObservationsList: () => void;
+}
+
+export function ObservationsDetails({
+  showObservationModal,
+  setShowObservationModal,
+  patient,
+  observationsList,
+  reloadObservationsList,
+}: ObservationsDetailsProps) {
+  const { Text } = Typography;
+
+  return (
+    <>
+      <Space size="middle" className={s.space}>
+        <Text code>patient: {patient.name?.[0].family}</Text>
+        <Text code>code: Hemoglobin [Mass/volume] in Blood (LOINC#718-7)</Text>
+      </Space>
+      <div className={s.table}>
+        <ObservationsListTable observationsList={observationsList} />
+      </div>
+    </>
+  );
+}
+```
+
+```scss
+.space {
+  margin: 0 10px;
+}
+
+.table {
+  margin: 10px;
+}
+```
+
+## Get and show resources
+
+### Patients list
 
 Обновим контейнер PatientsList:
 
 ```tsx
-import { RenderRemoteData } from 'aidbox-react/lib/components/RenderRemoteData';
-import { Button } from 'antd';
-import { AddPatientModal } from '../../components/AddPatientModal';
-import { AlertFailure } from '../../components/AlertFailure';
-import { AppHeader } from '../../components/AppHeader';
-import { Loader } from '../../components/Loader';
-import { PatientsListTable } from '../../components/PatientsListTable';
-import { usePatientsList } from './hooks';
-import s from './PatientsList.module.scss';
+import { RenderRemoteData } from "aidbox-react/lib/components/RenderRemoteData";
+import { Button } from "antd";
+import { AddPatientModal } from "../../components/AddPatientModal";
+import { AlertFailure } from "../../components/AlertFailure";
+import { AppHeader } from "../../components/AppHeader";
+import { Loader } from "../../components/Loader";
+import { PatientsListTable } from "../../components/PatientsListTable";
+import { usePatientsList } from "./hooks";
+import s from "./PatientsList.module.scss";
 
 export function PatientsList() {
-    const { showPatientModal, setShowPatientModal, patientsRD, reloadPatientsList } =
-        usePatientsList();
+  const {
+    showPatientModal,
+    setShowPatientModal,
+    patientsRD,
+    reloadPatientsList,
+  } = usePatientsList();
 
-    return (
-        <>
-            <AppHeader>
-                <Button
-                    key="create-patient"
-                    onClick={() => setShowPatientModal(true)}
-                    type={'primary'}
-                >
-                    Create patient
-                </Button>
-            </AppHeader>
-            <AddPatientModal
-                showPatientModal={showPatientModal}
-                setShowPatientModal={setShowPatientModal}
-                reloadPatientsList={reloadPatientsList}
-            />
-            <RenderRemoteData
-                remoteData={patientsRD}
-                renderFailure={(error) => <AlertFailure error={error} />}
-                renderLoading={() => <Loader />}
-            >
-                {(data) => (
-                    <div className={s.table}>
-                        <PatientsListTable patientsList={data} />
-                    </div>
-                )}
-            </RenderRemoteData>
-        </>
-    );
+  return (
+    <>
+      <AppHeader>
+        <Button
+          key="create-patient"
+          onClick={() => setShowPatientModal(true)}
+          type={"primary"}
+        >
+          Create patient
+        </Button>
+      </AppHeader>
+      <AddPatientModal
+        showPatientModal={showPatientModal}
+        setShowPatientModal={setShowPatientModal}
+        reloadPatientsList={reloadPatientsList}
+      />
+      <RenderRemoteData
+        remoteData={patientsRD}
+        renderFailure={(error) => <AlertFailure error={error} />}
+        renderLoading={() => <Loader />}
+      >
+        {(data) => (
+          <div className={s.table}>
+            <PatientsListTable patientsList={data} />
+          </div>
+        )}
+      </RenderRemoteData>
+    </>
+  );
 }
 ```
 
-Создадим для `PatientsList` файл `hooks.ts`: 
+Создадим для `PatientsList` файл `hooks.ts`:
 
 ```ts
-import { useService } from 'aidbox-react/lib/hooks/service';
-import { extractBundleResources, getFHIRResources } from 'aidbox-react/lib/services/fhir';
-import { mapSuccess } from 'aidbox-react/lib/services/service';
-import { useState } from 'react';
-import { Patient } from '../../types/aidbox';
+import { useService } from "aidbox-react/lib/hooks/service";
+import {
+  extractBundleResources,
+  getFHIRResources,
+} from "aidbox-react/lib/services/fhir";
+import { mapSuccess } from "aidbox-react/lib/services/service";
+import { useState } from "react";
+import { Patient } from "../../types/aidbox";
 
 export function usePatientsList() {
-    const [showPatientModal, setShowPatientModal] = useState(false);
+  const [showPatientModal, setShowPatientModal] = useState(false);
 
-    const [patientsRD, manager] = useService(async () => {
-        const response = await getFHIRResources<Patient>('Patient', {
-            _sort: '-_lastUpdated',
-        });
-        return mapSuccess(response, (bundle) => {
-            return extractBundleResources(bundle).Patient;
-        });
-    }, []);
+  const [patientsRD, manager] = useService(async () => {
+    const response = await getFHIRResources<Patient>("Patient", {
+      _sort: "-_lastUpdated",
+    });
+    return mapSuccess(response, (bundle) => {
+      return extractBundleResources(bundle).Patient;
+    });
+  }, []);
 
-    const reloadPatientsList = () => {
-        manager.reload();
-    };
+  const reloadPatientsList = () => {
+    manager.reload();
+  };
 
-    return { showPatientModal, setShowPatientModal, patientsRD, reloadPatientsList };
+  return {
+    showPatientModal,
+    setShowPatientModal,
+    patientsRD,
+    reloadPatientsList,
+  };
 }
 ```
 
@@ -863,11 +982,123 @@ export function usePatientsList() {
 
 ```scss
 .table {
-    margin: 0 10px;
+  margin: 0 10px;
 }
 ```
 
-## Aidbox REST Console
+### Observations list
+
+Обновим контейнер `ObservationsList`:
+
+```tsx
+import { RenderRemoteData } from "aidbox-react/lib/components/RenderRemoteData";
+import { Button, Space } from "antd";
+import { AlertFailure } from "../../components/AlertFailure";
+import { AppHeader } from "../../components/AppHeader";
+import { Loader } from "../../components/Loader";
+import { ObservationsDetails } from "../../components/ObservationsDetails";
+import { useObservationsList } from "./hooks";
+
+export function ObservationsList() {
+  const {
+    navigate,
+    showObservationModal,
+    setShowObservationModal,
+    patientObservationsMapRD,
+    reloadObservationsList,
+  } = useObservationsList();
+
+  return (
+    <>
+      <AppHeader>
+        <Space size="middle">
+          <Button onClick={() => setShowObservationModal(true)} type="primary">
+            Add observation
+          </Button>
+          <Button onClick={() => navigate("patients")}>Back</Button>
+        </Space>
+      </AppHeader>
+      <RenderRemoteData
+        remoteData={patientObservationsMapRD}
+        renderFailure={(error) => <AlertFailure error={error} />}
+        renderLoading={() => <Loader />}
+      >
+        {(data) => (
+          <ObservationsDetails
+            showObservationModal={showObservationModal}
+            setShowObservationModal={setShowObservationModal}
+            patient={data.patient}
+            observationsList={data.observations}
+            reloadObservationsList={reloadObservationsList}
+          />
+        )}
+      </RenderRemoteData>
+    </>
+  );
+}
+```
+
+Добавим `hooks.ts` для `ObservationsList`:
+
+```ts
+import { useService } from "aidbox-react/lib/hooks/service";
+import {
+  extractBundleResources,
+  getFHIRResource,
+  getFHIRResources,
+} from "aidbox-react/lib/services/fhir";
+import { mapSuccess, sequenceMap } from "aidbox-react/lib/services/service";
+import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { Observation, Patient } from "../../types/aidbox";
+
+export function useObservationsList() {
+  const navigate = useNavigate();
+
+  const { patientId } = useParams();
+
+  const [showObservationModal, setShowObservationModal] = useState(false);
+
+  const [patientRD] = useService(async () => {
+    const response = await getFHIRResource<Patient>({
+      resourceType: "Patient",
+      id: patientId,
+    });
+    return response;
+  });
+
+  const [observationsRD, manager] = useService(async () => {
+    const response = await getFHIRResources<Observation>("Observation", {
+      _subject: patientId,
+      _sort: "-_lastUpdated",
+    });
+    return mapSuccess(response, (bundle) => {
+      return extractBundleResources(bundle).Observation;
+    });
+  }, []);
+
+  const reloadObservationsList = () => {
+    manager.reload();
+  };
+
+  const patientObservationsMapRD = sequenceMap({
+    patient: patientRD,
+    observations: observationsRD,
+  });
+
+  return {
+    navigate,
+    showObservationModal,
+    setShowObservationModal,
+    patientObservationsMapRD,
+    reloadObservationsList,
+  };
+}
+```
+
+## Resource creation
+
+### Aidbox REST Console
 
 Добавим через REST консоль ресурс `Patient` используя `yaml` формат:
 
@@ -912,7 +1143,305 @@ content-type: application/json
 }
 ```
 
+С помощью консоли мы также можем получать ресурсы, используя GET запрос.
+Например, мы можем получить [Bundle](https://www.hl7.org/fhir/bundle.html) пациентов, написав команду:
 
+```
+GET /fhir/Patient?_format=yaml
+```
+
+### Create Patient resource
+
+С помощью метода `saveFHIRResource` из библиотеки `aidbox-react` мы можем создавать или обновлять ресурсы.
+
+Добавим компонент модального окна с формой для создания ресурса `Patient`:
+
+```tsx
+import { isFailure, isSuccess } from "aidbox-react/lib/libs/remoteData";
+import { saveFHIRResource } from "aidbox-react/lib/services/fhir";
+import { Button, DatePicker, Form, Input, message, Modal, Select } from "antd";
+import { Patient } from "../../types/aidbox";
+import { formatHumanDate } from "../../utils/date";
+
+interface AddPatientModalProps {
+  showPatientModal: boolean;
+  setShowPatientModal: (showPatientModal: boolean) => void;
+  reloadPatientsList: () => void;
+}
+
+export function AddPatientModal({
+  showPatientModal,
+  setShowPatientModal,
+  reloadPatientsList,
+}: AddPatientModalProps) {
+  const onFinish = async (values: {
+    family: string;
+    birthDate: string;
+    gender: string;
+  }) => {
+    const patient = {
+      name: [
+        {
+          use: "official",
+          family: values.family,
+        },
+      ],
+      birthDate: values.birthDate && formatHumanDate(values.birthDate),
+      resourceType: "Patient" as "Patient",
+      gender: values.gender,
+    };
+    const response = await saveFHIRResource<Patient>(patient);
+    if (isFailure(response)) {
+      message.error(response.error);
+    }
+    if (isSuccess(response)) {
+      message.success("Patient created");
+    }
+    reloadPatientsList();
+    setShowPatientModal(false);
+  };
+
+  return (
+    <Modal
+      title="Create patient"
+      open={showPatientModal}
+      onCancel={() => setShowPatientModal(false)}
+      okButtonProps={{ style: { display: "none" } }}
+      cancelButtonProps={{ style: { display: "none" } }}
+    >
+      <Form
+        onFinish={onFinish}
+        labelCol={{ span: 6 }}
+        wrapperCol={{ span: 20 }}
+      >
+        <Form.Item
+          required
+          name="family"
+          label="Name"
+          rules={[{ required: true, message: "Please enter a name" }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item name="birthDate" label="Date of Birth">
+          <DatePicker format="MM-DD-YYYY" />
+        </Form.Item>
+        <Form.Item name="gender" label="Gender">
+          <Select>
+            <Select.Option value="male">Male</Select.Option>
+            <Select.Option value="female">Female</Select.Option>
+          </Select>
+        </Form.Item>
+        <Form.Item wrapperCol={{ offset: 6, span: 20 }}>
+          <Button type="primary" htmlType="submit">
+            Submit
+          </Button>
+        </Form.Item>
+      </Form>
+    </Modal>
+  );
+}
+```
+
+Функции `isFailure` и `isSuccess` используются для определения статуса результата запроса.
+
+Изменим контейнер PatientsList в соответствии с параметрами необходимыми для компонента `AddPatientModal`:
+
+```tsx
+import { RenderRemoteData } from "aidbox-react/lib/components/RenderRemoteData";
+import { Button } from "antd";
+import { AddPatientModal } from "../../components/AddPatientsModal";
+import { AlertFailure } from "../../components/AlertFailure";
+import { AppHeader } from "../../components/AppHeader";
+import { Loader } from "../../components/Loader";
+import { PatientsListTable } from "../../components/PatientsListTable";
+import { usePatientsList } from "./hook";
+import s from "./PatientsList.module.scss";
+
+export function PatientsList() {
+  const {
+    showPatientModal,
+    setShowPatientModal,
+    patientsRD,
+    reloadPatientsList,
+  } = usePatientsList();
+
+  return (
+    <>
+      <AppHeader>
+        <Button
+          key="create-patient"
+          onClick={() => setShowPatientModal(true)}
+          type={"primary"}
+        >
+          Create patient
+        </Button>
+      </AppHeader>
+      <AddPatientModal
+        showPatientModal={showPatientModal}
+        setShowPatientModal={setShowPatientModal}
+        reloadPatientsList={reloadPatientsList}
+      />
+      <RenderRemoteData
+        remoteData={patientsRD}
+        renderFailure={(error) => <AlertFailure error={error} />}
+        renderLoading={() => <Loader />}
+      >
+        {(data) => (
+          <div className={s.table}>
+            <PatientsListTable patientsList={data} />
+          </div>
+        )}
+      </RenderRemoteData>
+    </>
+  );
+}
+```
+
+### Create Observation resource
+
+Добавим компонент модального окна с формой для создания ресурса `Observation`:
+
+```tsx
+import { isFailure, isSuccess } from "aidbox-react/lib/libs/remoteData";
+import { saveFHIRResource } from "aidbox-react/lib/services/fhir";
+import { Button, DatePicker, Form, InputNumber, message, Modal } from "antd";
+import { Observation, Patient } from "../../types/aidbox";
+
+interface AddObservationModalProps {
+  showObservationModal: boolean;
+  setShowObservationModal: (showObservationModal: boolean) => void;
+  patient: Patient;
+  reloadObservationsList: () => void;
+}
+
+export function AddObservationModal({
+  showObservationModal,
+  setShowObservationModal,
+  patient,
+  reloadObservationsList,
+}: AddObservationModalProps) {
+  const onFinish = async (values: { dateTime: Date; value: number }) => {
+    const observation = {
+      status: "final",
+      code: {
+        coding: [
+          {
+            system: "http://loinc.org",
+            code: "718-7",
+            display: "Hemoglobin [Mass/volume] in Blood",
+          },
+        ],
+      },
+      effective: {
+        dateTime: new Date(values.dateTime).toISOString(),
+      },
+      value: {
+        Quantity: {
+          value: values.value,
+          unit: "g/dL",
+        },
+      },
+      subject: {
+        id: `${patient.id}`,
+        display: `${patient.name?.[0].family}`,
+        resourceType: "Patient" as "Patient",
+      },
+      resourceType: "Observation" as "Observation",
+    };
+    const response = await saveFHIRResource<Observation>(observation);
+    if (isFailure(response)) {
+      message.error(response.error);
+    }
+    if (isSuccess(response)) {
+      message.success("Observation added");
+    }
+    reloadObservationsList();
+    setShowObservationModal(false);
+  };
+
+  return (
+    <Modal
+      title="Add observation"
+      open={showObservationModal}
+      onCancel={() => setShowObservationModal(false)}
+      okButtonProps={{ style: { display: "none" } }}
+      cancelButtonProps={{ style: { display: "none" } }}
+    >
+      <Form
+        onFinish={onFinish}
+        labelCol={{ span: 4 }}
+        wrapperCol={{ span: 20 }}
+      >
+        <Form.Item
+          name="value"
+          label="Value"
+          rules={[{ required: true, message: "Please enter a value" }]}
+        >
+          <InputNumber addonAfter="g/dL" />
+        </Form.Item>
+        <Form.Item
+          name="dateTime"
+          label="Date"
+          rules={[{ required: true, message: "Please enter a date and time" }]}
+        >
+          <DatePicker showTime format="MM-DD-YYYY HH:mm" />
+        </Form.Item>
+        <Form.Item wrapperCol={{ offset: 4, span: 20 }}>
+          <Button type="primary" htmlType="submit">
+            Submit
+          </Button>
+        </Form.Item>
+      </Form>
+    </Modal>
+  );
+}
+```
+
+Обновим `ObservationsDetails` в соответствии с параметрами компонента `AddObservationModal`:
+
+```tsx
+import { Space, Typography } from "antd";
+import { Observation, Patient } from "../../types/aidbox";
+import { AddObservationModal } from "../AddObservationModal";
+import { ObservationsListTable } from "../ObservationsListTable";
+import s from "./ObservationsDetails.module.scss";
+
+interface ObservationsDetailsProps {
+  showObservationModal: boolean;
+  setShowObservationModal: (showObservationModal: boolean) => void;
+  patient: Patient;
+  observationsList: Observation[];
+  reloadObservationsList: () => void;
+}
+
+export function ObservationsDetails({
+  showObservationModal,
+  setShowObservationModal,
+  patient,
+  observationsList,
+  reloadObservationsList,
+}: ObservationsDetailsProps) {
+  const { Text } = Typography;
+
+  return (
+    <>
+      <AddObservationModal
+        showObservationModal={showObservationModal}
+        setShowObservationModal={setShowObservationModal}
+        patient={patient}
+        reloadObservationsList={reloadObservationsList}
+      />
+      <Space size="middle" className={s.space}>
+        <Text code>patient: {patient.name?.[0].family}</Text>
+        <Text code>code: Hemoglobin [Mass/volume] in Blood (LOINC#718-7)</Text>
+      </Space>
+      <div className={s.table}>
+        <ObservationsListTable observationsList={observationsList} />
+      </div>
+    </>
+  );
+}
+```
 
 <!-- ### Configure Aidbox
 
