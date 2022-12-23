@@ -221,7 +221,7 @@ For routing, we will use the [React Router](https://reactrouter.com/) library.
 
 For faster development we will also use the [Ant Design](https://ant.design/) component library.
 
-The main tool this tutorial aims to study is the [aidbox-react](https://www.npmjs.com/package/aidbox-react) library.
+The main tool this tutorial aims to study is the [aidbox-react](https://github.com/beda-software/aidbox-react) library.
 
 Add these packages:
 
